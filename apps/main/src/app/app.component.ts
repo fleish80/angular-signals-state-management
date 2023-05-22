@@ -1,14 +1,20 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { NxWelcomeComponent } from './nx-welcome.component';
+import { RouterOutlet } from '@angular/router';
+import { getRandomJoke } from './joke-api.util';
+import { AsyncPipe, JsonPipe } from '@angular/common';
 
 @Component({
   standalone: true,
-  imports: [NxWelcomeComponent, RouterModule],
-  selector: 'angular-signals-state-management-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  imports: [RouterOutlet, AsyncPipe, JsonPipe],
+  selector: 'df-root',
+  template: `
+  <pre>{{joke |  async }}</pre>
+  
+  `,
+  styleUrls: [],
 })
 export class AppComponent {
   title = 'main';
+
+  joke = getRandomJoke();
 }
