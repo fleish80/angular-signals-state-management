@@ -1,20 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { getRandomJoke } from './joke-api.util';
-import { AsyncPipe, JsonPipe } from '@angular/common';
+import { AsyncPipe, JsonPipe, NgIf } from '@angular/common';
+import { JokeFacadeStoreService } from './joke-facade-store.service';
 
 @Component({
   standalone: true,
-  imports: [RouterOutlet, AsyncPipe, JsonPipe],
+  imports: [RouterOutlet, AsyncPipe, JsonPipe, NgIf],
   selector: 'df-root',
   template: `
-  <pre>{{joke |  async }}</pre>
-  
-  `,
+  <span *ngIf="loading()">Loading...</span> 
+  {{ joke() }} `,
   styleUrls: [],
 })
 export class AppComponent {
   title = 'main';
 
-  joke = getRandomJoke();
+  #jokeFacadeStoreService = inject(JokeFacadeStoreService);
+  joke = this.#jokeFacadeStoreService.joke;
+  loading = this.#jokeFacadeStoreService.loading;
 }
