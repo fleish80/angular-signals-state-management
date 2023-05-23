@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { computed, Injectable, signal } from '@angular/core';
 import { getRandomJoke } from './joke-api.util';
+import { defaultEqualityFn } from './default-equality-fn.util';
 
 
 interface State {
@@ -11,7 +12,7 @@ interface State {
 }
 
 @Injectable({ providedIn: 'root' })
-export class JokeFacadeStoreService {
+export class JokeFacadeStoreService  {
 
     constructor() {
         this.loadJoke();
@@ -24,10 +25,10 @@ export class JokeFacadeStoreService {
         loaded: false
       });
 
-    joke = computed(() => this.#state().joke, {equal: (a, b) => a == b});
-    error = computed(() => this.#state().error, {equal: (a, b) => a == b});
-    loading = computed(() => this.#state().loading, {equal: (a, b) => a == b});
-    loaded = computed(() => this.#state, {equal: (a, b) => a == b});
+    joke = computed(() => this.#state().joke, {equal: defaultEqualityFn});
+    error = computed(() => this.#state().error, {equal: defaultEqualityFn});
+    loading = computed(() => this.#state().loading, {equal: defaultEqualityFn});
+    loaded = computed(() => this.#state(), {equal: defaultEqualityFn});
 
     patch(partialState: Partial<State>) {
         this.#state.update((state) => ({

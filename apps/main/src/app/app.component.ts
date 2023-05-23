@@ -1,7 +1,6 @@
+import { AsyncPipe, JsonPipe, NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { getRandomJoke } from './joke-api.util';
-import { AsyncPipe, JsonPipe, NgIf } from '@angular/common';
 import { JokeFacadeStoreService } from './joke-facade-store.service';
 
 @Component({
@@ -9,8 +8,16 @@ import { JokeFacadeStoreService } from './joke-facade-store.service';
   imports: [RouterOutlet, AsyncPipe, JsonPipe, NgIf],
   selector: 'df-root',
   template: `
-  <span *ngIf="loading()">Loading...</span> 
-  {{ joke() }} `,
+
+  <p *ngIf="this.loading(); else jokeTemplate">Loading...</p>
+  <ng-template #jokeTemplate>
+    <p *ngIf="!this.error()">{{this.joke()}}</p>
+    <p *ngIf="this.error()">{{this.error()?.message}}</p>
+  </ng-template>
+
+  <button (click)="loadAnotherJoke()">Load Another Joke</button>
+
+  `,
   styleUrls: [],
 })
 export class AppComponent {
@@ -19,4 +26,9 @@ export class AppComponent {
   #jokeFacadeStoreService = inject(JokeFacadeStoreService);
   joke = this.#jokeFacadeStoreService.joke;
   loading = this.#jokeFacadeStoreService.loading;
+  error = this.#jokeFacadeStoreService.error;
+
+  loadAnotherJoke() {
+    this.#jokeFacadeStoreService.loadJoke();
+  }
 }
